@@ -38,12 +38,92 @@ void TicTacToe::gameMenu()
 	if (choice == 1)
 	{
 		system("cls");
+		cout << "\n\t\tYou chose Player VS Player" << endl;
 		cout << "\n\n\t\t Starting Game...\n\n" << endl;
 		cout << "\t\t Initializing game board....\n\n" << endl;
 		displayBoard(); //display the initial board
+		gameMode = GameMode::PVP;
+		gameManager();
+
+	}
+
+	else if (choice == 2)
+	{
+		system("cls");
+		cout << "\n\t\tYou chose Player VS Computer" << endl;
+		cout << "\n\n\t\t Starting Game...\n\n" << endl;
+		cout << "\t\t Initializing game board....\n\n" << endl;
+		displayBoard(); //display the initial board
+		gameMode = GameMode::PVAI;
+		gameManager();
+	}
+}
+
+void TicTacToe::gameManager()
+{
+
+	int noOfMoves = 0; //Initialize noOfMoves by 0
+
+	bool done = false; //Initialize done as false
+
+
+	char player = 'X'; //let player X start the game
+
+
+
+	while (!done)   //Loop until done is true
+	{
+
+		int row, col;
+
+		if (gameMode == GameMode::PVP)
+		{
+			getXOMove(player, row, col); //Reading the row and col number
+
+			cout << "\nPVP Mode" << endl;
+
+			done = addMove(noOfMoves, player, row, col); //Add the move to the board
+
+			//Switch the players
+
+			if (player == 'X')
+
+				player = 'O';
+
+			else
+
+				player = 'X';
+		}
+
+		else if (gameMode == GameMode::PVAI)
+		{
+			(player == 'O') ? implementAIMove() : getXOMove(player, row, col);
+
+			cout << "\nAI Mode" << endl;
+
+			//getXOMove(player, row, col); //Reading the row and col number
+
+			done = addMove(noOfMoves, player, row, col); //Add the move to the board
+
+			//Switch the players
+
+			if (player == 'X')
+
+				player = 'O';
+
+			else
+
+				player = 'X';
+
+		}
+		
+
+		
+
 
 
 	}
+
 }
 
 //function to display the current game board
@@ -113,7 +193,7 @@ status TicTacToe::gameStatus(int noOfMoves)
 
 		{
 
-			return WIN;
+			return status::WIN;
 
 		}
 
@@ -129,7 +209,7 @@ status TicTacToe::gameStatus(int noOfMoves)
 
 		{
 
-			return WIN;
+			return status::WIN;
 
 		}
 
@@ -141,7 +221,7 @@ status TicTacToe::gameStatus(int noOfMoves)
 
 	{
 
-		return WIN;
+		return status::WIN;
 
 	}
 
@@ -151,7 +231,7 @@ status TicTacToe::gameStatus(int noOfMoves)
 
 	{
 
-		return WIN;
+		return status::WIN;
 
 	}
 
@@ -167,13 +247,13 @@ status TicTacToe::gameStatus(int noOfMoves)
 
 			if (board[i][j] == ' ')
 
-				return CONTINUE;
+				return status::CONTINUE;
 
 		}
 
 	}
 
-	return DRAW; //return DRAW
+	return status::DRAW; //return DRAW
 
 }
 
@@ -209,6 +289,11 @@ void TicTacToe::getXOMove(char playerSymbol, int& row, int& col)
 
 }
 
+void TicTacToe::implementAIMove()
+{
+	cout << "AI Mode called";
+}
+
 //Function to add the players move
 
 bool TicTacToe::addMove(int noOfMoves, char playerSymbol, int row, int col) {
@@ -223,7 +308,7 @@ bool TicTacToe::addMove(int noOfMoves, char playerSymbol, int row, int col) {
 
 	status gStatus = gameStatus(noOfMoves); //check for winner
 
-	if (gStatus == WIN)  //If gameStatus() returns WIN, display the player details and return true
+	if (gStatus == status::WIN)  //If gameStatus() returns WIN, display the player details and return true
 	{ 
 
 		cout << "Player " << playerSymbol << " wins!" << endl;
@@ -231,7 +316,7 @@ bool TicTacToe::addMove(int noOfMoves, char playerSymbol, int row, int col) {
 		return true;
 
 	}
-	else if (gStatus == DRAW)   //If gameStatus() returns DRAW, display game draw and return true
+	else if (gStatus == status::DRAW)   //If gameStatus() returns DRAW, display game draw and return true
 	{
 
 		cout << "This game is a draw!" << endl;
