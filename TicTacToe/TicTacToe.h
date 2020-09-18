@@ -1,7 +1,7 @@
-
-
 #pragma once
 
+#include<vector>
+#include "Player.h"
 
 enum class status 
 {
@@ -20,11 +20,7 @@ enum class GameMode
 	PVAI
 };
 
-struct BoardCoordinate 
-{
-	int x;
-	int y;
-};
+
 
 //class definition
 class TicTacToe 
@@ -40,20 +36,28 @@ public:
 
 	TicTacToe(); //default constructor
 
+	void resetGame();
+
+	void setPlayerSymbol(char symbol, int i); 
+
+	char getPlayerSymbol(int i); 
+
 	void gameMenu();
 
-	void gameManager();
+	void gameManager(Player* playerX,Player* playerO);
 
 	void displayBoard(); //function to display the current game board
 
-	bool isValidMove(int row, int col); //function to check whether valid row and column number is entered or not
+	bool isValidMove(); //function to check whether valid the entered move is valid or not
 
-	status gameStatus(int noOfMoves); //function to check the current game status
+	std::vector<int> allPossibleMoves();  //function to check all the possible moves in available
+
+	status gameStatus(); //function to check the current game status
 
 	void getXOMove(char playerSymbol, int& row, int& col); //Function to read the players move
 
-	void implementAIMove();
+	
 
-	bool addMove(int noOfMoves, char playerSymbol, int row, int col); //Function to add the players move
+	bool addMove(char playerSymbol, int index); //Function to add the players move
 
 };

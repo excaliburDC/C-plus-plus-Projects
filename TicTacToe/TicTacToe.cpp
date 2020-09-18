@@ -1,7 +1,9 @@
 #include <iostream>
-#include <cstdlib>
 #include <iomanip>
 #include "TicTacToe.h"
+#include "Human.h"
+#include "CompAI.h"
+
 
 using std::cout;
 using std::cin;
@@ -12,7 +14,11 @@ using std::setw;
 
 TicTacToe::TicTacToe() 
 {
+	resetGame();
+}
 
+void TicTacToe::resetGame()
+{
 	//initializing the board with all elements as ' '
 
 	for (int row = 0; row < 3; row++)
@@ -20,108 +26,109 @@ TicTacToe::TicTacToe()
 		for (int col = 0; col < 3; col++)
 
 			board[row][col] = ' ';
+}
 
+void TicTacToe::setPlayerSymbol(char symbol, int i)
+{
+	board[i / 3][i % 3] = symbol;
+}
+
+char TicTacToe::getPlayerSymbol(int i)
+{
+	return board[i / 3][i % 3];
 }
 
 void TicTacToe::gameMenu()
 {
+	char ch;
 	int choice;
 
-	cout << "\n\n\t\t\t\t\tWelcome to TIC TAC TOE\n" << endl;
-	cout << "\t\t\t\t     - - - - - - - - - - - - - - "<<endl;
-	cout << "\n\n\t\t\tChoose Game Mode " << endl;
-	cout << "\n\n 1.  Player VS Player" << endl;
-	cout << "\n 2. Player VS Computer" << endl;
-	cout << "\t\t\t\t\t   - - - - - - - - \n\n" << endl;
-	cout << "\t\t\t\tPress 1 or 2 to select...  " << endl;
-	cin >> choice;
-	if (choice == 1)
-	{
-		system("cls");
-		cout << "\n\t\tYou chose Player VS Player" << endl;
-		cout << "\n\n\t\t Starting Game...\n\n" << endl;
-		cout << "\t\t Initializing game board....\n\n" << endl;
-		displayBoard(); //display the initial board
-		gameMode = GameMode::PVP;
-		gameManager();
+	Human x_human('X');
+	Human o_human('O');
+	CompAI x_AI('X');
+	CompAI o_AI('O');
 
-	}
+	Player* X, * O;
 
-	else if (choice == 2)
+	do 
 	{
-		system("cls");
-		cout << "\n\t\tYou chose Player VS Computer" << endl;
-		cout << "\n\n\t\t Starting Game...\n\n" << endl;
-		cout << "\t\t Initializing game board....\n\n" << endl;
-		displayBoard(); //display the initial board
-		gameMode = GameMode::PVAI;
-		gameManager();
-	}
+		cout << "\n\n\t\t\t\t\tWelcome to TIC TAC TOE\n" << endl;
+		cout << "\t\t\t\t     - - - - - - - - - - - - - - " << endl;
+		cout << "\n\n\t\t\tChoose Game Mode " << endl;
+		cout << "\n\n 1.  Player VS Player" << endl;
+		cout << "\n 2. Player VS Computer" << endl;
+		cout << "\n 3. Computer VS Player" << endl;
+		cout << "\t\t\t\t\t   - - - - - - - - \n\n" << endl;
+		cout << "\t\t\t\tPress 1,2 or 3 to select...  " << endl;
+		cin >> choice;
+
+		switch (choice)
+		{
+		case 1:
+			system("cls");
+			X = &x_human;
+			O = &o_human;
+			break;
+
+		case 2:
+			system("cls");
+			X = &x_human;
+			O = &o_AI;
+			break;
+
+		case 3:
+			system("cls");
+			X = &x_AI;
+			O = &o_human;
+			break;
+
+		default:
+			cout << "Wrong choice... Please enter a valid choice" << endl;;
+		}
+
+		gameManager(X, O);
+
+		cout << endl << "Do you want to play again (y/n) : ";
+		cin >> ch;
+	} 
+	while (ch == 'y' || ch == 'Y');
+
+	
+	
 }
 
-void TicTacToe::gameManager()
+void TicTacToe::gameManager(Player *playerX ,Player* playerO)
 {
+	char letter = 'X';
+	int index;
+	resetGame();
 
-	int noOfMoves = 0; //Initialize noOfMoves by 0
+	
+	status gStatus = gameStatus(); //check for winner
 
-	bool done = false; //Initialize done as false
-
-
-	char player = 'X'; //let player X start the game
-
-
-
-	while (!done)   //Loop until done is true
+	while (gStatus == status::CONTINUE)
 	{
+		if (letter == 'O')
+			index = playerO->getMove(*this);
+		else
+			index = playerX->getMove(*this);
 
-		int row, col;
+		addMove(letter, index);
 
-		if (gameMode == GameMode::PVP)
+		if (gStatus == status::WIN)  //If gameStatus() returns WIN, display the player details and return true
 		{
-			getXOMove(player, row, col); //Reading the row and col number
 
-			cout << "\nPVP Mode" << endl;
-
-			done = addMove(noOfMoves, player, row, col); //Add the move to the board
-
-			//Switch the players
-
-			if (player == 'X')
-
-				player = 'O';
-
-			else
-
-				player = 'X';
+			cout << "Player " << letter << " wins!" << endl;
+			break;
 		}
 
-		else if (gameMode == GameMode::PVAI)
+		else if (gStatus == status::DRAW)   //If gameStatus() returns DRAW, display game draw and return true
 		{
-			(player == 'O') ? implementAIMove() : getXOMove(player, row, col);
 
-			cout << "\nAI Mode" << endl;
-
-			//getXOMove(player, row, col); //Reading the row and col number
-
-			done = addMove(noOfMoves, player, row, col); //Add the move to the board
-
-			//Switch the players
-
-			if (player == 'X')
-
-				player = 'O';
-
-			else
-
-				player = 'X';
+			cout << "This game is a draw!" << endl;
+			break;
 
 		}
-		
-
-		
-
-
-
 	}
 
 }
@@ -163,24 +170,39 @@ void TicTacToe::displayBoard()
 
 //function to check whether valid row and column number is entered or not
 
-bool TicTacToe::isValidMove(int row, int col) 
+bool TicTacToe::isValidMove() 
 {
 
-	//checking if valid row and column number is entered and already filled cell number is not entered
+	for (int row = 0; row < 3; row++)
+	{
+		for (int col = 0; col < 3; col++)
+		{
+			if (board[row][col] == ' ')
+				return true;
+		}
+	}
+	return false;
 
-	if (board[row][col] == ' ' && (row >= 0 && row <= 2) && (col >= 0 && col <= 2))
+}
 
-		return true; //return true if a valid cell number is entered
+std::vector<int> TicTacToe::allPossibleMoves()
+{
+	std::vector<int> move_set;
 
-	else
-
-		return false; //return false if not a valid cell number is entered
-
+	for (int row = 0; row < 3; row++)
+	{
+		for (int col = 0; col < 3; col++)
+		{
+			if (board[row][col] == ' ')
+				move_set.push_back(3 * row + col);
+		}
+	}
+	return move_set;
 }
 
 //function to check the current game status
 
-status TicTacToe::gameStatus(int noOfMoves) 
+status TicTacToe::gameStatus() 
 {
 
 	//Check rows for a win
@@ -289,50 +311,22 @@ void TicTacToe::getXOMove(char playerSymbol, int& row, int& col)
 
 }
 
-void TicTacToe::implementAIMove()
-{
-	cout << "AI Mode called";
-}
+
 
 //Function to add the players move
 
-bool TicTacToe::addMove(int noOfMoves, char playerSymbol, int row, int col) {
+bool TicTacToe::addMove(char playerSymbol, int index) 
+{
 
-	board[row][col] = playerSymbol; //add the player symbol to the cell
-
-	noOfMoves++; //Increment noOfMoves by 1
+	setPlayerSymbol(playerSymbol, index);
 
 	system("cls");
 
+	cout << endl;
+	cout << playerSymbol << "'s move : " << index + 1 << endl;
+
 	displayBoard(); //Display the current board after adding the players move
 
-	status gStatus = gameStatus(noOfMoves); //check for winner
 
-	if (gStatus == status::WIN)  //If gameStatus() returns WIN, display the player details and return true
-	{ 
-
-		cout << "Player " << playerSymbol << " wins!" << endl;
-
-		return true;
-
-	}
-	else if (gStatus == status::DRAW)   //If gameStatus() returns DRAW, display game draw and return true
-	{
-
-		cout << "This game is a draw!" << endl;
-
-		return true;
-
-	}
-	else if (noOfMoves >= 9)  //if noOfMoves > 9, match tied, return true
-	{ 
-
-		return true;
-
-	}
-
-	else
-
-		return false; //else return false
 
 }
