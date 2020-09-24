@@ -67,12 +67,12 @@ int main()
 		system("cls");
 		cout << "\n\n\t\t\t\t\tWelcome to TIC TAC TOE\n" << endl;
 		cout << "\t\t\t\t     - - - - - - - - - - - - - - " << endl;
-		cout << "\n\n\t\t\tChoose Game Mode " << endl;
-		cout << "\n\n 1.  Player VS Player" << endl;
-		cout << "\n 2. Player VS Computer" << endl;
-		cout << "\n 3. Computer VS Player" << endl;
-		cout << "\t\t\t\t\t   - - - - - - - - \n\n" << endl;
-		cout << "\t\t\t\tPress 1,2 or 3 to select...  " << endl;
+		cout << "\n\n\t\t\t\t\t   Choose Game Mode " << endl;
+		cout << "\n\n\t\t\t\t\t 1.  Player VS Player" << endl;
+		cout << "\n\t\t\t\t\t 2. Player VS Computer" << endl;
+		cout << "\n\t\t\t\t\t 3. Computer VS Player" << endl;
+		cout << "\n\n\t\t\t\t      - - - - - - - - - - - - - - \n\n" << endl;
+		cout << "\t\t\t\t\tPress 1,2 or 3 to select...  " << endl;
 		cin >> choice;
 
 		switch (choice)
