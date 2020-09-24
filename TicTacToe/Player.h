@@ -1,6 +1,6 @@
-#include "TicTacToe.h"
-
 #pragma once
+
+#include "TicTacToe.h"
 
 //abstract class
 class Player

@@ -25,48 +25,49 @@ AIMove CompAI::minimaxAlgo(TicTacToe state, char curr_player)
 {
 	char max_player = this->getSymbol();
 	char other_player = (curr_player == 'X') ? 'O' : 'X';
-	AIMove bestMove, currentMove;
+	AIMove best, current;
 
 	// base condition for win - lose
-	if (state.whoWon == other_player)
+	if (state.winnerSymbol() == other_player)
 	{
-		bestMove.score = state.allPossibleMoves().size() + 1;
+		best.score = state.allPossibleMoves().size() + 1;
 		if (other_player != max_player)
-			bestMove.score = -bestMove.score;
-		return bestMove;
+			best.score = -best.score;
+		return best;
 	}
-	// base condtion for draw
+	// base condition for draw
 	if (!state.isMovePossible())
 	{
-		bestMove.score = 0;
-		return bestMove;
+		best.score = 0;
+		return best;
 	}
 
 	if (curr_player == max_player)
-		bestMove.score = -1000000;
+		best.score = -1000000;
 	else
-		bestMove.score = 1000000;
+		best.score = 1000000;
 
 	std::vector<int> move_set = state.allPossibleMoves();
 
 	for (int i = 0; i < move_set.size(); i++)
 	{
 		state.addMove(curr_player, move_set[i]);
-		currentMove = minimax(state, other_player);
-		state.setChar(' ', move_set[i]);
+		current = minimaxAlgo(state, other_player);
+		state.setPlayerSymbol(' ', move_set[i]);
 		state.resetWinner();
-		currentMove.index = move_set[i];
+		current.index = move_set[i];
 
 		if (curr_player == max_player)
 		{
-			if (currentMove.score > bestMove.score)
-				bestMove = currentMove;
+			if (current.score > best.score)
+				best = current;
 		}
 		else
 		{
-			if (currentMove.score < bestMove.score)
-				bestMove = currentMove;
+			if (current.score < best.score)
+				best = current;
 		}
 	}
-	return bestMove;
+	return best;
 }
+

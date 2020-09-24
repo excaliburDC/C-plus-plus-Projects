@@ -10,7 +10,7 @@ int Human::getMove(TicTacToe game)
 	int index;
 	while (1)
 	{
-		cout << "\nEnter index: ";
+		cout << "\nEnter move (1-9): ";
 		cin >> index;
 
 		if (game.getPlayerSymbol(index - 1) == ' ')
