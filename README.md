@@ -4,6 +4,8 @@ This repository contain the console based game I made using C++
 <h2>1.Battleship</h2> 
 <b>This is a single player battleship game where player has to guess the positions of different types of ships in a board</b>
 
+![Battleship](Battleship/Battleship-output.gif)
+
 <h2> 2. Snake Game</h2>
 <b>The classic single player snake game made using C++ where the snake will grow larger as long as he keeps on consuming the food which will be spawned randomly at different locations</b>
 
